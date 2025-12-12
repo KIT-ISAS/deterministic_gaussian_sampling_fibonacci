@@ -8,10 +8,12 @@ authors = [
 ]
 license = {text = "MIT"}
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
-    "numpy (>=2.3.5,<3.0.0)",
-    "scipy (>=1.16.3,<2.0.0)"
+    "numpy (>=2.0.0,<3.0.0)",
+    "scipy>=1.15,<1.16; python_version < '3.11'",
+    "scipy>=1.16.3,<2.0.0; python_version >= '3.11'",
+    "h5py (>=3.15.1,<4.0.0)",
 ]
 
 
