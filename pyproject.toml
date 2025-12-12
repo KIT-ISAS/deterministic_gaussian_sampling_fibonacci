@@ -26,3 +26,8 @@ include = [
     { path = "src/deterministic_gaussian_sampling_fibonacci/data/**/*.mat", format = "wheel" },
     { path = "src/deterministic_gaussian_sampling_fibonacci/data/**/*.mat", format = "sdist" },
 ]
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.0.2,<10.0.0)"
+]
