@@ -6,7 +6,7 @@ from functools import lru_cache
 
 
 SUPPORED_DIM = [2, 3, 4, 5, 6]
-FIB_TYPES = ['ImprovedFrolov', 'ClassicalFrolov', 'Fibonacci']
+FIB_TYPES = ['ImprovedFrolov', 'ClassicalFrolov', 'Fibonacci', 'Galois']
 
 """returns np array of shape (N, dim)"""
 @lru_cache
