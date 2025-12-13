@@ -16,6 +16,7 @@ pip install git+https://github.com/KIT-ISAS/deterministic_gaussian_sampling_fibo
 from deterministic_gaussian_sampling_fibonacci import sample_gaussian_fibonacci
 import numpy as np
 
+# sample_gaussian_fibonacci(mean, covariance_matrix, L_Vols, sample_type)
 samples = sample_gaussian_fibonacci([1, 1], np.eye(2), 100, "Fibonacci")
 ```
 
