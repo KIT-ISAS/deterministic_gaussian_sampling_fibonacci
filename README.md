@@ -4,11 +4,11 @@
 
  # Usage Example
 
- ```python
-from sample_gaus import sample_gaussian_fibonacci
+```python
+from deterministic_gaussian_sampling_fibonacci import sample_gaussian_fibonacci
 import numpy as np
 
-samples = sample_gaussian_fibonacci([1,1], np.eye(2), 100, 'Fibonacci')
+samples = sample_gaussian_fibonacci([1, 1], np.eye(2), 100, "Fibonacci")
 ```
 
 # Supported sample sizes and types
