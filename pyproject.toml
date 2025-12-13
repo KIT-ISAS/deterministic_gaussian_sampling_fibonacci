@@ -6,7 +6,8 @@ authors = [
     {name = "Vlad Korsakov",email = "ulqba@student.kit.edu"},
     {name = "Daniel Frisch",email = "daniel.frisch@kit.edu"}
 ]
-license = {text = "MIT"}
+license = "MIT"
+license-files = ["LICENSE"]
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
