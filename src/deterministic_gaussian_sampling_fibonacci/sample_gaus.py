@@ -31,7 +31,31 @@ def _transform_grid_gaussian(grid, mu, cov):
 	for i in range(gaus.shape[1]):
 		gaus[:,i] += mu[i]
 
-	return gaus
+	return gaus, V, D
+
+def _mean_correction(samples, mu):
+	samples = samples + mu
+	return samples
+	
+
+def _fast_cholesky_covariance_correction(samples, V, D):
+	# see [JAIF23_Frisch] V.E
+
+	# variance correction
+	L = samples.shape[0]
+	v_d = 1 / L * np.sum(samples**2, axis=0)  # shape (dim,)
+
+	X_stdD = samples / np.sqrt(v_d)
+
+	# Fast Cholesky Covariance Correction
+	C_stdD = 1 / L * (X_stdD.T @ X_stdD)
+	L_stdD = np.linalg.cholesky(C_stdD)
+	L_stdD_inv = np.linalg.inv(L_stdD)
+
+	X_Gauss = V @ D @ L_stdD_inv @ X_stdD.T  # (dim,dim) @ (dim,dim) @ (dim,dim) @ (dim,L) -> (dim,L)
+	X_Gauss = X_Gauss.T  # (L,dim)
+	return X_Gauss
+
 
 def _check_parameters(mu, cov, LVol, type):
 	if type not in FIB_TYPES:
@@ -66,5 +90,19 @@ def sample_gaussian_fibonacci(mu: list | np.ndarray, cov: np.ndarray, sample_cou
 	dim = mu.shape[0]
 	grid = _get_fitting_grid(dim, sample_count, type)
 
-	samples = _transform_grid_gaussian(grid, mu, cov)
+	samples, V, D = _transform_grid_gaussian(grid, mu, cov)
+
+	# center for fast cholesky correction
+	samples = samples - np.mean(samples, axis=0)
+	samples = _fast_cholesky_covariance_correction(samples, V, D)
+	samples = _mean_correction(samples, mu)
 	return samples
+
+if __name__ == "__main__":
+	mu = np.array([0.0, 0.0, 0.0])
+	cov = np.array([[1.0, 0.5, 0.3],
+					[0.5, 1.0, 0.2],
+					[0.3, 0.2, 1.0]])
+	samples = sample_gaussian_fibonacci(mu, cov, sample_count=1000, type='Fibonacci')
+	print("Generated Samples:\n", samples)
+	print("shape:", samples.shape)

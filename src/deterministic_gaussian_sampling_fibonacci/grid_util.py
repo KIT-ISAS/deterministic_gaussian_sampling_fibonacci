@@ -79,5 +79,5 @@ if __name__ == "__main__":
 	# ax.set_title(f"Grid samples (N={grid.shape[0]})")
 	# plt.tight_layout()
 	# plt.show()
-	g = _load_data(5, 100000, 'ClassicalFrolov')
+	g = _load_data(6, 1000, 'ClassicalFrolov')
 	print(g.shape)
