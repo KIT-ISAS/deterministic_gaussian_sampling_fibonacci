@@ -1,26 +1,11 @@
 import numpy as np
-import h5py
-from importlib import resources
 from scipy.stats import norm
-from functools import lru_cache
+
+from .grid_util import _get_fitting_grid
 
 
 SUPPORED_DIM = [2, 3, 4, 5, 6]
 FIB_TYPES = ['ImprovedFrolov', 'ClassicalFrolov', 'Fibonacci', 'Galois']
-
-"""returns np array of shape (N, dim)"""
-@lru_cache
-def _load_data(dim, LVol, type='Fibonacci'):
-	filename = f"dim={dim:02d}_LVol={LVol}_{type}.mat"
-	mat_res = resources.files("deterministic_gaussian_sampling_fibonacci.data") / filename
-	try:
-		with resources.as_file(mat_res) as mat_path:
-			with h5py.File(mat_path, "r") as f:
-				data = f.get('X')
-				data = np.array(data)
-	except Exception as e:
-		raise RuntimeError(f"{type} Samples for dim={dim} and LVol={LVol} are not available. please check the docuentation for supported dimensions and LVol values.")
-	return data
 
 def _transform_grid_gaussian(grid, mu, cov):
 	eps = 1e-9
@@ -58,28 +43,28 @@ def _check_parameters(mu, cov, LVol, type):
 
 	if cov.shape != (dim, dim):
 		raise ValueError(f"Covariance matrix shape {cov.shape} does not match mu shape {mu.shape}.")
+	
 
 
-def sample_gaussian_fibonacci(mu: list | np.ndarray, cov: np.ndarray, LVol: int = 100, type: str = 'Fibonacci') -> np.ndarray:
+
+def sample_gaussian_fibonacci(mu: list | np.ndarray, cov: np.ndarray, sample_count: int = 100, type: str = 'Fibonacci') -> np.ndarray:
 	"""
 	Generate deterministic Gaussian samples using Fibonacci/Frolov sequences.
 	
 	Args:
 		mu: Mean vector of shape (dim,). Can be a list or numpy array.
 		cov: Covariance matrix of shape (dim, dim).
-		LVol: Number of samples to generate. Default is 100.
+		sample_count: Number of samples to generate. Default is 100.
 		type: Type of sequence ('Fibonacci', 'ClassicalFrolov', or 'ImprovedFrolov'). Default is 'Fibonacci'.
 	
 	Returns:
-		Gaussian samples of shape (LVol, dim) as a numpy array.
+		Gaussian samples of shape (sample_count, dim) as a numpy array.
 	"""
 	mu = np.asarray(mu)
-	_check_parameters(mu, cov, LVol, type)
+	_check_parameters(mu, cov, sample_count, type)
 
 	dim = mu.shape[0]
-	grid = _load_data(dim, LVol, type)
-
-	grid = grid + 0.5
+	grid = _get_fitting_grid(dim, sample_count, type)
 
 	samples = _transform_grid_gaussian(grid, mu, cov)
 	return samples

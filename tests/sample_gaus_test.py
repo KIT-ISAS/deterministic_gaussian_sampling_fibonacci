@@ -13,6 +13,8 @@ def test_001_gaus_sample_test(type, dim):
 		sampcount = 1000 # dim = 6, LVol = 10000, type = 'ClassicalFrolov' is unsupported
 	else:
 		sampcount = 10000
+
+
 	np.random.seed(0)
 	mu = np.random.randn(dim)
 	A = np.random.randn(dim, dim)
