@@ -97,12 +97,3 @@ def sample_gaussian_fibonacci(mu: list | np.ndarray, cov: np.ndarray, sample_cou
 	samples = _fast_cholesky_covariance_correction(samples, V, D)
 	samples = _mean_correction(samples, mu)
 	return samples
-
-if __name__ == "__main__":
-	mu = np.array([0.0, 0.0, 0.0])
-	cov = np.array([[1.0, 0.5, 0.3],
-					[0.5, 1.0, 0.2],
-					[0.3, 0.2, 1.0]])
-	samples = sample_gaussian_fibonacci(mu, cov, sample_count=1000, type='Fibonacci')
-	print("Generated Samples:\n", samples)
-	print("shape:", samples.shape)

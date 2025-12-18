@@ -63,21 +63,3 @@ def _load_data(dim, LVol, type='Fibonacci'):
 	except Exception as e:
 		raise RuntimeError(f"{type} Samples for dim={dim} and LVol={LVol} are not available. please check the docuentation for supported dimensions and LVol values.")
 	return data
-
-
-if __name__ == "__main__":
-	# grid = _get_fitting_grid(2, 30, 'Fibonacci')
-	# print(grid.shape)
-
-	# import matplotlib.pyplot as plt
-
-	# fig, ax = plt.subplots(figsize=(6, 6))
-	# ax.scatter(grid[:, 0], grid[:, 1], s=8, alpha=0.7)
-	# ax.set_aspect("equal", adjustable="box")
-	# ax.set_xlabel("x1")
-	# ax.set_ylabel("x2")
-	# ax.set_title(f"Grid samples (N={grid.shape[0]})")
-	# plt.tight_layout()
-	# plt.show()
-	g = _load_data(6, 1000, 'ClassicalFrolov')
-	print(g.shape)
