@@ -49,8 +49,12 @@ def _fast_cholesky_covariance_correction(samples, V, D):
 
 	# Fast Cholesky Covariance Correction
 	C_stdD = 1 / L * (X_stdD.T @ X_stdD)
-	L_stdD = np.linalg.cholesky(C_stdD)
-	L_stdD_inv = np.linalg.inv(L_stdD)
+	try:
+		L_stdD = np.linalg.cholesky(C_stdD)
+		L_stdD_inv = np.linalg.inv(L_stdD)
+	except np.linalg.LinAlgError:
+		# In case L_stdD non PD (for example if C is almost 0, or other numerical issues), skip the correction
+		return samples
 
 	X_Gauss = V @ D @ L_stdD_inv @ X_stdD.T  # (dim,dim) @ (dim,dim) @ (dim,dim) @ (dim,L) -> (dim,L)
 	X_Gauss = X_Gauss.T  # (L,dim)
