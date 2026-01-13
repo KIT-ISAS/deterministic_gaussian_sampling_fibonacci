@@ -38,6 +38,9 @@ def _get_fitting_grid(dim, sample_count, type):
 
 
 	# Rescale 
+	if sample_count == 1:
+		return shifted_grid + 0.5  # only one point, return center point
+	
 	border_wanted = 1/2 - 1/(2*sample_count)
 	fac = np.max(shifted_grid, axis=0) / border_wanted
 	if np.all(np.isfinite(fac)):

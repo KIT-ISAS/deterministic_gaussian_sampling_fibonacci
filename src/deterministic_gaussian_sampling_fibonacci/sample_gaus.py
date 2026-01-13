@@ -15,23 +15,28 @@ def _transform_grid_gaussian(grid, mu, cov):
 
 	var = np.mean(gaus**2, axis=0)
 
-	gaus = gaus / np.sqrt(var)
+	sample_count = grid.shape[0]
+	if sample_count > 1:
+		gaus = gaus / np.sqrt(var)
 
-	# scale with eigen decomposition
-	ew, V = np.linalg.eig(cov)
+		# scale with eigen decomposition
+		ew, V = np.linalg.eig(cov)
 
-	D = np.diag(np.sqrt(ew))	
+		D = np.diag(np.sqrt(ew))	
 
-	gaus = gaus.T	# (dim,L)
+		gaus = gaus.T	# (dim,L)
 
-	gaus = V @ D @ gaus # (dim,dim) @ (dim,dim) @ (dim,L) -> (dim,L)
+		gaus = V @ D @ gaus # (dim,dim) @ (dim,dim) @ (dim,L) -> (dim,L)
 
-	gaus = gaus.T # (L,dim)
+		gaus = gaus.T # (L,dim)
 
-	for i in range(gaus.shape[1]):
-		gaus[:,i] += mu[i]
+		for i in range(gaus.shape[1]):
+			gaus[:,i] += mu[i]
 
-	return gaus, V, D
+		return gaus, V, D
+	else:
+		# For single sample, just return the mean (best point estimate)
+		return mu.reshape(1, -1), None, None
 
 def _mean_correction(samples, mu):
 	samples = samples + mu
@@ -91,13 +96,17 @@ def sample_gaussian_fibonacci(mu: list | np.ndarray, cov: np.ndarray, sample_cou
 	mu = np.asarray(mu)
 	_check_parameters(mu, cov, sample_count, type)
 
+	if sample_count == 0:
+		return np.empty((0, mu.shape[0]))
+
 	dim = mu.shape[0]
 	grid = _get_fitting_grid(dim, sample_count, type)
 
 	samples, V, D = _transform_grid_gaussian(grid, mu, cov)
 
 	# center for fast cholesky correction
-	samples = samples - np.mean(samples, axis=0)
-	samples = _fast_cholesky_covariance_correction(samples, V, D)
-	samples = _mean_correction(samples, mu)
+	if sample_count > 1:
+		samples = samples - np.mean(samples, axis=0)
+		samples = _fast_cholesky_covariance_correction(samples, V, D)
+		samples = _mean_correction(samples, mu)
 	return samples
