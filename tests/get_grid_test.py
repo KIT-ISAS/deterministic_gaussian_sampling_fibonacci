@@ -9,7 +9,7 @@ FIB_TYPES = ['ImprovedFrolov', 'ClassicalFrolov', 'Fibonacci']
 
 @pytest.mark.parametrize("type", FIB_TYPES)
 @pytest.mark.parametrize("dim", FIB_DIMS)
-def test_001_gaus_sample_test(type, dim):
+def test_001_grid_basic(type, dim):
 	if dim == 6:
 		sampcount = 1000 # dim = 6, LVol = 10000, type = 'ClassicalFrolov' is unsupported
 	else:
@@ -18,3 +18,6 @@ def test_001_gaus_sample_test(type, dim):
 	grid = get_uniform_grid(dim, sampcount, type)
 
 	assert grid.shape == (sampcount, dim)
+
+	eps = 1e-3
+	assert np.all((grid >= 0 - eps) & (grid <= 1 + eps))
