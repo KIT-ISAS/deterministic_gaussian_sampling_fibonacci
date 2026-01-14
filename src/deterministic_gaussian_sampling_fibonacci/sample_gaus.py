@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.stats import norm
 
-from .grid_util import _get_fitting_grid
+from .grid_util import get_uniform_grid
 
 
 SUPPORED_DIM = [2, 3, 4, 5, 6]
@@ -100,7 +100,7 @@ def sample_gaussian_fibonacci(mu: list | np.ndarray, cov: np.ndarray, sample_cou
 		return np.empty((0, mu.shape[0]))
 
 	dim = mu.shape[0]
-	grid = _get_fitting_grid(dim, sample_count, type)
+	grid = get_uniform_grid(dim, sample_count, type)
 
 	samples, V, D = _transform_grid_gaussian(grid, mu, cov)
 

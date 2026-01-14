@@ -4,9 +4,16 @@ import h5py
 import numpy as np
 
 """
-Generates deterministic grids in [0,1]^d
+Get a uniform grid within [0,1]^dim of given sample_count and type.
+
+Args:
+	dim: Dimension of the grid.
+	sample_count: Number of samples to generate.
+	type: Type of sequence ('Fibonacci', 'ClassicalFrolov', or 'ImprovedFrolov').
+Returns:
+	Grid points of shape (sample_count, dim) as a numpy array.
 """
-def _get_fitting_grid(dim, sample_count, type):
+def get_uniform_grid(dim: int, sample_count: int, type: str) -> np.ndarray:
 	# try to find min grid size >= sample_count
 	# as a sideeffect, grids with size < sample_count are also cached
 	LVols = [100, 1000, 10_000, 100_000, 1_000_000]
