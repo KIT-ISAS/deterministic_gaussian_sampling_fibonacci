@@ -24,8 +24,8 @@ samples = sample_gaussian_fibonacci([1, 1], np.eye(2), 100, "Fibonacci")
 from deterministic_gaussian_sampling_fibonacci import get_uniform_grid
 
 
-# get_uniform_grid(sample_count, dimension, grid_type)
-grid = get_uniform_grid(100, 2, "Fibonacci")
+# get_uniform_grid(dimension, sample_count, grid_type)
+grid = get_uniform_grid(2, 100, "Fibonacci")
 ```
 
 ## Maximum supported sample counts by dimension and type
