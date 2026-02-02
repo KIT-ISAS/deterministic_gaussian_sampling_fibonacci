@@ -43,14 +43,23 @@ def _mean_correction(samples, mu):
 	return samples
 	
 
-def _fast_cholesky_covariance_correction(samples, V, D):
+def _transform_with_fast_cholesky_covariance_correction(grid, cov):
 	# see [JAIF23_Frisch] V.E
 
-	# variance correction
-	L = samples.shape[0]
-	v_d = 1 / L * np.sum(samples**2, axis=0)  # shape (dim,)
 
-	X_stdD = samples / np.sqrt(v_d)
+	ew, V = np.linalg.eig(cov)
+	D = np.diag(np.sqrt(ew))
+	
+	eps = 1e-9
+	grid = np.clip(grid, eps, 1 - eps) # avoid inf in ppf
+	x_std =  norm.ppf(grid)
+	x_std = x_std - np.mean(x_std, axis=0, keepdims=True)
+
+	# variance correction
+	L = x_std.shape[0]
+	v_d = 1 / L * np.sum(x_std**2, axis=0)  # shape (dim,)
+
+	X_stdD = x_std / np.sqrt(v_d)
 
 	# Fast Cholesky Covariance Correction
 	C_stdD = 1 / L * (X_stdD.T @ X_stdD)
@@ -59,7 +68,7 @@ def _fast_cholesky_covariance_correction(samples, V, D):
 		L_stdD_inv = np.linalg.inv(L_stdD)
 	except np.linalg.LinAlgError:
 		# In case L_stdD non PD (for example if C is almost 0, or other numerical issues), skip the correction
-		return samples
+		return None
 
 	X_Gauss = V @ D @ L_stdD_inv @ X_stdD.T  # (dim,dim) @ (dim,dim) @ (dim,dim) @ (dim,L) -> (dim,L)
 	X_Gauss = X_Gauss.T  # (L,dim)
@@ -102,11 +111,16 @@ def sample_gaussian_fibonacci(mu: list | np.ndarray, cov: np.ndarray, sample_cou
 	dim = mu.shape[0]
 	grid = get_uniform_grid(dim, sample_count, type)
 
-	samples, V, D = _transform_grid_gaussian(grid, mu, cov)
+	
 
 	# center for fast cholesky correction
 	if sample_count > 1:
-		samples = samples - np.mean(samples, axis=0)
-		samples = _fast_cholesky_covariance_correction(samples, V, D)
+		samples = _transform_with_fast_cholesky_covariance_correction(grid, cov)
+		if samples is None:
+			# fallback to eigen decomposition method
+			samples, V, D = _transform_grid_gaussian(grid, mu, cov)
+			return samples
 		samples = _mean_correction(samples, mu)
+	else:
+		samples, V, D = _transform_grid_gaussian(grid, mu, cov)
 	return samples

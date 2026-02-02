@@ -24,9 +24,10 @@ def test_001_gaus_sample_test(type, dim):
 	mu_pred = np.mean(samp, axis=0) # shape (3,)
 	C_pred = np.cov(samp, rowvar=False, bias=True)
 
-	assert np.all(np.isclose(mu, mu_pred, 10**-2))
-	if sampcount > 10000:
-		assert np.all(np.isclose(cov, C_pred, 10**-2))
+	assert np.all(np.isclose(mu, mu_pred, 10**-15))
+	assert np.all(np.isclose(cov, C_pred, 10**-15))
+	
+		
 
 @pytest.mark.parametrize("type", FIB_TYPES)
 @pytest.mark.parametrize("dim", FIB_DIMS)
