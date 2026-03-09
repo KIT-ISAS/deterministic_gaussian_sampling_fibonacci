@@ -4,7 +4,13 @@ Deterministic sampling via orthogonal inverse transform of low-discrepancy Fibon
 
 ## Installation
 
-Install directly from GitHub:
+Install via pip:
+
+```bash
+pip install deterministic-gaussian-sampling-fibonacci
+```
+
+or directly from GitHub:
 
 ```bash
 pip install git+https://github.com/KIT-ISAS/deterministic_gaussian_sampling_fibonacci.git

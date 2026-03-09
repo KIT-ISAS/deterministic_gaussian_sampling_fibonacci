@@ -1,6 +1,6 @@
 [project]
 name = "deterministic-gaussian-sampling-fibonacci"
-version = "0.2.4"
+version = "0.2.5"
 description = "Deterministic sampling via orthogonal inverse transform of low-discrepancy Fibonacci grids."
 authors = [
     {name = "Vlad Korsakov",email = "ulqba@student.kit.edu"},
